@@ -24,6 +24,34 @@ class markov:
 			model[final_gram] = [None]
 		return model
 
+	def test_model(self, tokens, n):
+		if not self.model:
+			print "You must build model first!"
+		else:
+			attempt = 0
+			count = 0
+			max_iterations = 5
+			for i in range(len(tokens) - n):
+				iter_c = 0
+				gram = tuple(tokens[i:i+n])
+				next_token = tokens[i+n]
+				count = count + 1
+				while True:
+					attempt = attempt + 1
+					if gram in self.model.keys():
+						predict = random.choice(self.model[gram])
+					else:
+						#attempt = attempt + 10
+						break 					
+					iter_c = iter_c + 1
+					if predict == next_token:
+						break
+					if iter_c > max_iterations:
+						attempt = attempt + 5
+						break
+			print "Current score is : ", attempt/count	
+
+
 	def build_model_word(self, n):
 		model = dict()
 		tokens = self.text.strip().split(" ")
@@ -42,6 +70,11 @@ class markov:
 		else:
 			model[final_gram] = [None]
 		self.model = model
+
+	def test_model_word(self, filePath, n):
+		text = self.read_file(filePath)
+		tokens = text.strip().split(" ")
+		self.test_model(tokens, n)
 
 	def next_word(self, myStr):
 		""" generate the next word based on input myStr """
@@ -123,7 +156,9 @@ class markov:
 if __name__ == '__main__':
 	import sys
 	n = int(sys.argv[1])
-	filepath = sys.argv[2]
+	filepath = "train.txt"
 	mk = markov(filepath)
-	"""print mk.word_level_gen(n)"""
-	print mk.next_words("Sometimes", 20)
+	#print mk.char_level_gen(n)
+	"""print mk.next_words("You", 1)"""
+	mk.build_model_word(n)
+	mk.test_model_word("badtest.txt", n)
