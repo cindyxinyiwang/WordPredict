@@ -28,13 +28,15 @@ class markov:
 		if not self.model:
 			print "You must build model first!"
 		else:
-			attempt = 0
-			count = 0
-			max_iterations = 5
+			#attempt = 0
+			#count = 0
+			#max_iterations = 5
+			success = 0
 			for i in range(len(tokens) - n):
 				iter_c = 0
 				gram = tuple(tokens[i:i+n])
 				next_token = tokens[i+n]
+				"""
 				count = count + 1
 				while True:
 					attempt = attempt + 1
@@ -49,7 +51,12 @@ class markov:
 					if iter_c > max_iterations:
 						attempt = attempt + 5
 						break
-			print "Current score is : ", attempt/count	
+				"""
+				if gram in self.model.keys():
+						predict = random.choice(self.model[gram])
+						if predict == next_token:
+							success = success + 1
+			print "Current score is : ", success/float(len(tokens) - n)
 
 
 	def build_model_word(self, n):
